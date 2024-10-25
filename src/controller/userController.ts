@@ -2,21 +2,20 @@ import { Request, Response } from "express";
 import { CreateUserInput } from "@schema/userSchema";
 import { createUser } from "@service/userService";
 import { Prisma } from "@prisma/client";
+import { omit } from "lodash";
 
 export async function createUserHandler(
   req: Request<{}, {}, CreateUserInput>,
   res: Response
 ): Promise<void> {
-  const body = req.body;
+  const { email, password } = req.body;
 
   try {
-    const user = await createUser(body);
+    const user = await createUser(email, password);
     res.status(201).json({
       message: "User created successfully",
       user: {
         id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
@@ -40,5 +39,7 @@ export async function createUserHandler(
 }
 
 export async function getCurrentUserHandler(req: Request, res: Response) {
-  res.send(res.locals.user);
+  const user = res.locals.user;
+  const payload = omit(user, user.password);
+  res.send(payload);
 }
