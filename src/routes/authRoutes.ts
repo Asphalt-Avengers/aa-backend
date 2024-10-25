@@ -16,8 +16,8 @@ authRouter.post(
   createSessionHandler
 );
 
-authRouter.post("/sessions/refresh", refreshAccessTokenHandler);
+authRouter.post("/sessions/invalidate", invalidateSessionHandler);
 
-authRouter.post("/sessions/logout", requireUser, invalidateSessionHandler);
+authRouter.post("/sessions/refresh", requireUser, refreshAccessTokenHandler);
 
 export default authRouter;

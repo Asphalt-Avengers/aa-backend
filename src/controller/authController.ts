@@ -1,11 +1,6 @@
 import { Request, Response } from "express";
 import { CreateSessionInput } from "@schema/authSchema";
-import {
-  findSessionById,
-  signAccessToken,
-  signRefreshToken,
-  updateSession,
-} from "@service/authService";
+import { signAccessToken, signRefreshToken } from "@service/authService";
 import { findUserByEmail, findUserById } from "@service/userService";
 import argon2 from "argon2";
 import { verifyJwt } from "@utils/jwt";
@@ -29,19 +24,36 @@ export async function createSessionHandler(
   }
 
   const accessToken = signAccessToken(user);
-  const refreshToken = await signRefreshToken(user.id);
+  const refreshToken = signRefreshToken(user);
 
-  res.status(200).send({ accessToken, refreshToken });
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 15,
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 90,
+  });
+
+  res.status(200).send();
+}
+
+export async function invalidateSessionHandler(req: Request, res: Response) {
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+
+  res.status(200).send();
 }
 
 export async function refreshAccessTokenHandler(req: Request, res: Response) {
-  const refreshToken = req.get("headers.x-refresh");
+  const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     res.status(400).send("Refresh token is missing.");
     return;
   }
 
-  const decoded = verifyJwt<{ session: number }>(
+  const decoded = verifyJwt<{ id: number }>(
     refreshToken,
     "refreshTokenPublicKey"
   );
@@ -50,39 +62,18 @@ export async function refreshAccessTokenHandler(req: Request, res: Response) {
     return;
   }
 
-  const session = await findSessionById(decoded.session);
-  if (!session || !session.valid) {
-    res.status(401).send("Session is invalid.");
-    return;
-  }
-
-  const user = await findUserById(session.userId);
+  const user = await findUserById(decoded.id);
   if (!user) {
     res.status(401).send("User does not exist.");
     return;
   }
 
   const accessToken = signAccessToken(user);
-  res.send({ accessToken });
-}
 
-export async function invalidateSessionHandler(req: Request, res: Response) {
-  const refreshToken = req.get("headers.x-refresh");
-  if (!refreshToken) {
-    res.status(400).send("Refresh token is missing.");
-    return;
-  }
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 15,
+  });
 
-  const decoded = verifyJwt<{ session: number }>(
-    refreshToken,
-    "refreshTokenPublicKey"
-  );
-  if (!decoded) {
-    res.status(401).send("Refresh token is invalid.");
-    return;
-  }
-
-  await updateSession({ sessionId: decoded.session, valid: false });
-
-  res.status(200).send("Logged out successfully.");
+  res.status(200).send();
 }
