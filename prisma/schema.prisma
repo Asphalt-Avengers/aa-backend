@@ -19,9 +19,9 @@ model User {
 
 model Pothole {
   id              Int       @id @default(autoincrement())
-  latitude        Float
-  longitude       Float
-  severity        Int       // Representing severity of the pothole (e.g., 1-5 scale)
+  latitude        Float?
+  longitude       Float?
+  severity        Int?       // Representing severity of the pothole (e.g., 1-5 scale)
   description     String?
   images          PotholeImage[]
   createdAt       DateTime  @default(now())
@@ -44,8 +44,8 @@ model Report {
   description     String?
   potholes        Pothole[]
   comments        String?
-  status          String    // Status of the report, e.g., "Open", "In Progress", "Resolved"
+  status          String?    // Status of the report, e.g., "Open", "In Progress", "Resolved"
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-  details         ReportDetail[]
+  details         String?
 }
