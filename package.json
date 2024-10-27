@@ -1,7 +1,8 @@
 {
   "name": "aa-backend",
   "scripts": {
-    "server": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts"
+    "server": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
+    "load-sample-data": "node prisma/loadSampleData.ts"
   },
   "devDependencies": {
     "@types/config": "^3.3.5",
