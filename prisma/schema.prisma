@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model user {
   id               Int      @id @default(autoincrement())
   firstName        String?
   lastName         String?
@@ -17,32 +17,32 @@ model User {
   updatedAt        DateTime @updatedAt
 }
 
-model Pothole {
+model pothole {
   id              Int       @id @default(autoincrement())
   latitude        Float?
   longitude       Float?
   severity        Int?       // Representing severity of the pothole (e.g., 1-5 scale)
   description     String?
-  images          PotholeImage[]
+  images          potholeImage[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-  report          Report?   @relation(fields: [reportId], references: [id])
+  report          report?   @relation(fields: [reportId], references: [id])
   reportId        Int?
 }
 
-model PotholeImage {
+model potholeImage {
   id              Int       @id @default(autoincrement())
-  pothole         Pothole   @relation(fields: [potholeId], references: [id])
+  pothole         pothole   @relation(fields: [potholeId], references: [id])
   potholeId       Int
   s3Url           String    
   createdAt       DateTime  @default(now())
 }
 
-model Report {
+model report {
   id              Int       @id @default(autoincrement())
   location        String?
   description     String?
-  potholes        Pothole[]
+  potholes        pothole[]
   comments        String?
   status          String?    // Status of the report, e.g., "Open", "In Progress", "Resolved"
   createdAt       DateTime  @default(now())
