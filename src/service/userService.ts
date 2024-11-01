@@ -1,9 +1,9 @@
-import { User } from "@prisma/client";
 import prisma from "@prisma/index";
+import { CreateUserInput } from "@schema/userSchema";
 import argon2 from "argon2";
 
 export async function createUser(
-  input: Pick<User, "firstName" | "lastName" | "email" | "password">
+  input: CreateUserInput
 ) {
   return await prisma.user.create({
     data: {

@@ -5,6 +5,7 @@
     "load-sample-data": "node prisma/loadSampleData.ts"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.1.0",
     "@types/config": "^3.3.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",

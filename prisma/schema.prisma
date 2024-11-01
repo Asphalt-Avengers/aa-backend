@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model User {
   id               Int      @id @default(autoincrement())
   firstName        String?
   lastName         String?
@@ -17,35 +17,49 @@ model user {
   updatedAt        DateTime @updatedAt
 }
 
-model pothole {
-  id              Int       @id @default(autoincrement())
-  latitude        Float?
-  longitude       Float?
-  severity        Int?       // Representing severity of the pothole (e.g., 1-5 scale)
-  description     String?
-  images          potholeImage[]
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  report          report?   @relation(fields: [reportId], references: [id])
-  reportId        Int?
+model Pothole {
+  id               Int       @id @default(autoincrement())
+  latitude         Float?
+  longitude        Float?
+  severity         PotholeSeverity?
+  description      String?
+  images           PotholeImage[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  report           Report?
 }
 
-model potholeImage {
-  id              Int       @id @default(autoincrement())
-  pothole         pothole   @relation(fields: [potholeId], references: [id])
-  potholeId       Int
-  s3Url           String    
-  createdAt       DateTime  @default(now())
+model PotholeImage {
+  id               Int       @id @default(autoincrement())
+  pothole          Pothole   @relation(fields: [potholeId], references: [id])
+  potholeId        Int
+  s3Url            String    
+  createdAt        DateTime  @default(now())
 }
 
-model report {
-  id              Int       @id @default(autoincrement())
-  location        String?
-  description     String?
-  potholes        pothole[]
-  comments        String?
-  status          String?    // Status of the report, e.g., "Open", "In Progress", "Resolved"
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  details         String?
+model Report {
+  id               Int       @id @default(autoincrement())
+  location         String?
+  description      String?
+  pothole          Pothole   @relation(fields: [potholeId], references: [id])
+  potholeId        Int       @unique
+  comments         String?
+  status           ReportStatus?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  details          String?
+}
+
+enum ReportStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum PotholeSeverity {
+  MINOR
+  MODERATE
+  SIGNIFICANT
+  SEVERE
+  CRITICAL
 }
