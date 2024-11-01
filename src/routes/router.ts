@@ -1,6 +1,7 @@
 import { Router } from "express";
 import authRouter from "@routes/authRoutes";
 import userRouter from "@routes/userRoutes";
+import potholeRouter from "@routes/potholeRoutes";
 
 const router: Router = Router();
 
@@ -10,5 +11,6 @@ router.get("/healthcheck", (req, res) => {
 
 router.use(authRouter);
 router.use(userRouter);
+router.use(potholeRouter);
 
 export default router;
