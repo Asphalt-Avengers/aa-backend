@@ -1,5 +1,5 @@
 import express from "express";
-import { createPotholeHandler, deletePotholeHandler, getPotholeByIdHandler, getPotholeHandler, updatePotholeHandler } from "../controller/potholeController";
+import { createPotholeHandler, deletePotholeHandler, getPotholeByIdHandler, getPotholesHandler, updatePotholeHandler } from "../controller/potholeController";
 import requireUser from "../middleware/requireUser";
 import validateResource from "../middleware/validateResource";
 import { createPotholeSchema, idParamSchema, updatePotholeSchema } from "../schema/potholeSchema";
@@ -7,9 +7,9 @@ import { createPotholeSchema, idParamSchema, updatePotholeSchema } from "../sche
 const potholeRouter = express.Router();
 
 potholeRouter.get(
-  "/pothole",
+  "/potholes",
   requireUser,
-  getPotholeHandler,
+  getPotholesHandler,
 );
 
 potholeRouter.get(

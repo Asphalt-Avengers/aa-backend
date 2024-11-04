@@ -3,7 +3,7 @@ import { CreatePotholeBody, DeletePotholeParams, GetPotholeByIdParams, UpdatePot
 import { createPothole, deletePothole, getPotholeById, getPotholes, updatePothole } from "@service/potholeService";
 import { Request, Response } from "express";
 
-export const getPotholeHandler = async (req: Request<{}, {}, {}>, res: Response) => {
+export const getPotholesHandler = async (req: Request<{}, {}, {}>, res: Response) => {
   try {
     const potholes = await getPotholes();
     res.status(200).json({
