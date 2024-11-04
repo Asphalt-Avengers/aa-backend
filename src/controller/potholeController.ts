@@ -1,7 +1,22 @@
 import { Prisma } from "@prisma/client";
 import { CreatePotholeBody, DeletePotholeParams, UpdatePotholeBody, UpdatePotholeParams } from "@schema/potholeSchema";
-import { createPothole, deletePothole, updatePothole } from "@service/potholeService";
+import { createPothole, deletePothole, getPotholes, updatePothole } from "@service/potholeService";
 import { Request, Response } from "express";
+
+export const getPotholeHandler = async (req: Request<{}, {}, {}>, res: Response) => {
+  try {
+    const pothole = await getPotholes();
+    res.status(201).json({
+      message: "Retrieved potholes successfully",
+      pothole
+    });
+  } catch (e: any) {
+    res.status(500).json({
+      error: "An unexpected error occurred.",
+      details: e.message,
+    });
+  }
+};
 
 export const createPotholeHandler = async (req: Request<{}, {}, CreatePotholeBody>, res: Response) => {
   const body = req.body;

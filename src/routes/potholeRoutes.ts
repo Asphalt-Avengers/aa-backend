@@ -1,10 +1,16 @@
 import express from "express";
-import { createPotholeHandler, deletePotholeHandler, updatePotholeHandler } from "../controller/potholeController";
+import { createPotholeHandler, deletePotholeHandler, getPotholeHandler, updatePotholeHandler } from "../controller/potholeController";
 import requireUser from "../middleware/requireUser";
 import validateResource from "../middleware/validateResource";
 import { createPotholeSchema, deletePotholeSchema, updatePotholeSchema } from "../schema/potholeSchema";
 
 const potholeRouter = express.Router();
+
+potholeRouter.get(
+  "/pothole",
+  requireUser,
+  getPotholeHandler,
+);
 
 potholeRouter.post(
   "/pothole",
