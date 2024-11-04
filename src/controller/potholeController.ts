@@ -1,13 +1,36 @@
 import { Prisma } from "@prisma/client";
-import { CreatePotholeBody, DeletePotholeParams, UpdatePotholeBody, UpdatePotholeParams } from "@schema/potholeSchema";
-import { createPothole, deletePothole, getPotholes, updatePothole } from "@service/potholeService";
+import { CreatePotholeBody, DeletePotholeParams, GetPotholeByIdParams, UpdatePotholeBody, UpdatePotholeParams } from "@schema/potholeSchema";
+import { createPothole, deletePothole, getPotholeById, getPotholes, updatePothole } from "@service/potholeService";
 import { Request, Response } from "express";
 
 export const getPotholeHandler = async (req: Request<{}, {}, {}>, res: Response) => {
   try {
-    const pothole = await getPotholes();
-    res.status(201).json({
+    const potholes = await getPotholes();
+    res.status(200).json({
       message: "Retrieved potholes successfully",
+      potholes
+    });
+  } catch (e: any) {
+    res.status(500).json({
+      error: "An unexpected error occurred.",
+      details: e.message,
+    });
+  }
+};
+
+export const getPotholeByIdHandler = async (req: Request<GetPotholeByIdParams, {}, {}>, res: Response) => {
+  const id = Number(req.params.id)
+
+  try {
+    const pothole = await getPotholeById(id);
+    if (pothole === null) {
+      res.status(404).json({
+        error: `Pothole with ID ${id} not found`,
+      });
+      return;
+    }
+    res.status(200).json({
+      message: "Retrieved pothole successfully",
       pothole
     });
   } catch (e: any) {
@@ -41,7 +64,7 @@ export const updatePotholeHandler = async (req: Request<UpdatePotholeParams, {},
 
   try {
     const pothole = await updatePothole(id, body);
-    res.status(201).json({
+    res.status(200).json({
       message: "Pothole updated successfully",
       pothole
     });
@@ -66,7 +89,7 @@ export const deletePotholeHandler = async (req: Request<DeletePotholeParams, {},
 
   try {
     const pothole = await deletePothole(id);
-    res.status(201).json({
+    res.status(200).json({
       message: "Pothole deleted successfully",
       pothole
     });

@@ -11,6 +11,16 @@ export async function getPotholes(): Promise<(Pothole & { images: PotholeImage[]
   })
 }
 
+export async function getPotholeById(id: number): Promise<Pothole & { images: PotholeImage[], report: Report | null } | null> {
+  return await prisma.pothole.findUnique({
+    where: { id },
+    include: {
+      images: true,
+      report: true,
+    },
+  });
+}
+
 export async function createPothole(pothole: CreatePotholeBody): Promise<Pothole> {
   return await prisma.pothole.create({
     data: pothole,

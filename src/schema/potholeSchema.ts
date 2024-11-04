@@ -1,6 +1,16 @@
 import { PotholeSeverity } from "@prisma/client";
 import { TypeOf, z } from "zod";
 
+export const idParamSchema = z.object({
+  params: z.object({
+    id: z.string().refine((value) => !isNaN(Number(value)), {
+      "message": "ID must be valid number."
+    })
+  })
+});
+export type GetPotholeByIdParams = TypeOf<typeof idParamSchema>["params"];
+export type DeletePotholeParams = TypeOf<typeof idParamSchema>["params"];
+
 export const createPotholeSchema = z.object({
   body: z.object({
     latitude: z.number().min(-90).max(90).optional(),
@@ -26,12 +36,3 @@ export const updatePotholeSchema = z.object({
 });
 export type UpdatePotholeBody = TypeOf<typeof updatePotholeSchema>["body"];
 export type UpdatePotholeParams = TypeOf<typeof updatePotholeSchema>["params"];
-
-export const deletePotholeSchema = z.object({
-  params: z.object({
-    id: z.string().refine((value) => !isNaN(Number(value)), {
-      "message": "ID must be valid number."
-    })
-  })
-});
-export type DeletePotholeParams = TypeOf<typeof deletePotholeSchema>["params"];
