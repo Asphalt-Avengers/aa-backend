@@ -1,4 +1,5 @@
 import prisma from "@prisma/index";
+import { CreateUserInput } from "@schema/userSchema";
 import argon2 from "argon2";
 
 export async function createUser(email: string, password: string) {

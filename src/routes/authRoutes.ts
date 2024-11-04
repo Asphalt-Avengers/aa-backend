@@ -6,7 +6,6 @@ import {
   refreshAccessTokenHandler,
 } from "@controller/authController";
 import { createSessionSchema } from "@schema/authSchema";
-import requireUser from "@middleware/requireUser";
 
 const authRouter = Router();
 
@@ -16,8 +15,12 @@ authRouter.post(
   createSessionHandler
 );
 
-authRouter.post("/sessions/invalidate", invalidateSessionHandler);
+authRouter.post("/sessions/invalidate", 
+  invalidateSessionHandler
+);
 
-authRouter.post("/sessions/refresh", requireUser, refreshAccessTokenHandler);
+authRouter.post("/sessions/refresh", 
+  refreshAccessTokenHandler
+);
 
 export default authRouter;

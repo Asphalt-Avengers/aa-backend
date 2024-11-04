@@ -1,9 +1,11 @@
 {
   "name": "aa-backend",
   "scripts": {
-    "server": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts"
+    "server": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
+    "create-potholes": "ts-node-dev prisma/seeding/createPotholes.ts"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.1.0",
     "@types/config": "^3.3.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",

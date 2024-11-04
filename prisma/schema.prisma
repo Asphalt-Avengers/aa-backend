@@ -16,3 +16,50 @@ model User {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
+
+model Pothole {
+  id               Int       @id @default(autoincrement())
+  latitude         Float?
+  longitude        Float?
+  severity         PotholeSeverity?
+  description      String?
+  images           PotholeImage[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  report           Report?
+}
+
+model PotholeImage {
+  id               Int       @id @default(autoincrement())
+  pothole          Pothole   @relation(fields: [potholeId], references: [id])
+  potholeId        Int
+  s3Url            String    
+  createdAt        DateTime  @default(now())
+}
+
+model Report {
+  id               Int       @id @default(autoincrement())
+  location         String?
+  description      String?
+  pothole          Pothole   @relation(fields: [potholeId], references: [id])
+  potholeId        Int       @unique
+  comments         String?
+  status           ReportStatus?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  details          String?
+}
+
+enum ReportStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum PotholeSeverity {
+  MINOR
+  MODERATE
+  SIGNIFICANT
+  SEVERE
+  CRITICAL
+}
