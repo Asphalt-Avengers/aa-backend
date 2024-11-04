@@ -26,3 +26,12 @@ export const updatePotholeSchema = z.object({
 });
 export type UpdatePotholeBody = TypeOf<typeof updatePotholeSchema>["body"];
 export type UpdatePotholeParams = TypeOf<typeof updatePotholeSchema>["params"];
+
+export const deletePotholeSchema = z.object({
+  params: z.object({
+    id: z.string().refine((value) => !isNaN(Number(value)), {
+      "message": "ID must be valid number."
+    })
+  })
+});
+export type DeletePotholeParams = TypeOf<typeof deletePotholeSchema>["params"];

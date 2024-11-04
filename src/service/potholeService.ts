@@ -14,3 +14,9 @@ export async function updatePothole(id: number, pothole: UpdatePotholeBody): Pro
     data: pothole
   });
 }
+
+export async function deletePothole(id: number): Promise<Pothole> {
+  return await prisma.pothole.delete({
+    where: { id },
+  });
+}

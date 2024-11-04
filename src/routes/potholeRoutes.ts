@@ -1,8 +1,8 @@
 import express from "express";
-import { createPotholeHandler, updatePotholeHandler } from "../controller/potholeController";
+import { createPotholeHandler, deletePotholeHandler, updatePotholeHandler } from "../controller/potholeController";
 import requireUser from "../middleware/requireUser";
 import validateResource from "../middleware/validateResource";
-import { createPotholeSchema, updatePotholeSchema } from "../schema/potholeSchema";
+import { createPotholeSchema, deletePotholeSchema, updatePotholeSchema } from "../schema/potholeSchema";
 
 const potholeRouter = express.Router();
 
@@ -18,6 +18,13 @@ potholeRouter.put(
   requireUser,
   validateResource(updatePotholeSchema),
   updatePotholeHandler,
+);
+
+potholeRouter.delete(
+  "/pothole/:id",
+  requireUser,
+  validateResource(deletePotholeSchema),
+  deletePotholeHandler,
 );
 
 export default potholeRouter;
