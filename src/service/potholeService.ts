@@ -1,14 +1,16 @@
 import { Pothole } from "@prisma/client";
 import prisma from "@prisma/index";
-import { CreatePotholeInput } from "@schema/potholeSchema";
+import { CreatePotholeBody, UpdatePotholeBody } from "@schema/potholeSchema";
 
-export async function createPothole(pothole: CreatePotholeInput): Promise<Pothole> {
+export async function createPothole(pothole: CreatePotholeBody): Promise<Pothole> {
   return await prisma.pothole.create({
-    data: {
-      latitude: pothole.latitude,
-      longitude: pothole.longitude,
-      severity: pothole.severity,
-      description: pothole.description
-    },
+    data: pothole,
+  });
+}
+
+export async function updatePothole(id: number, pothole: UpdatePotholeBody): Promise<Pothole> {
+  return await prisma.pothole.update({
+    where: { id },
+    data: pothole
   });
 }

@@ -1,8 +1,9 @@
-import { CreatePotholeInput } from "@schema/potholeSchema";
-import { createPothole } from "@service/potholeService";
+import { Prisma } from "@prisma/client";
+import { CreatePotholeBody, UpdatePotholeBody, UpdatePotholeParams } from "@schema/potholeSchema";
+import { createPothole, updatePothole } from "@service/potholeService";
 import { Request, Response } from "express";
 
-export const createPotholeHandler = async (req: Request<{}, {}, CreatePotholeInput>, res: Response) => {
+export const createPotholeHandler = async (req: Request<{}, {}, CreatePotholeBody>, res: Response) => {
   const body = req.body;
 
   try {
@@ -12,6 +13,32 @@ export const createPotholeHandler = async (req: Request<{}, {}, CreatePotholeInp
       pothole
     });
   } catch (e: any) {
+    res.status(500).json({
+      error: "An unexpected error occurred.",
+      details: e.message,
+    });
+  }
+};
+
+export const updatePotholeHandler = async (req: Request<UpdatePotholeParams, {}, UpdatePotholeBody>, res: Response) => {
+  const id = Number(req.params.id)
+  const body = req.body;
+
+  try {
+    const pothole = await updatePothole(id, body);
+    res.status(201).json({
+      message: "Pothole updated successfully",
+      pothole
+    });
+  } catch (e: any) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2025") {
+        res.status(404).json({
+          error: `Pothole with ID ${id} not found`,
+        });
+        return;
+      }
+    }
     res.status(500).json({
       error: "An unexpected error occurred.",
       details: e.message,
