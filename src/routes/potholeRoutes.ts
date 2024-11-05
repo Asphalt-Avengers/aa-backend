@@ -1,43 +1,49 @@
 import express from "express";
-import { createPotholeHandler, deletePotholeHandler, getPotholeByIdHandler, getPotholeHandler, updatePotholeHandler } from "../controller/potholeController";
+import {
+  createPotholeHandler,
+  deletePotholeHandler,
+  getPotholeByIdHandler,
+  getPotholesHandler,
+  updatePotholeHandler,
+} from "../controller/potholeController";
 import requireUser from "../middleware/requireUser";
 import validateResource from "../middleware/validateResource";
-import { createPotholeSchema, idParamSchema, updatePotholeSchema } from "../schema/potholeSchema";
+import {
+  createPotholeSchema,
+  idParamSchema,
+  updatePotholeSchema,
+} from "../schema/potholeSchema";
 
 const potholeRouter = express.Router();
 
-potholeRouter.get(
-  "/pothole",
-  requireUser,
-  getPotholeHandler,
-);
+potholeRouter.get("/potholes", requireUser, getPotholesHandler);
 
 potholeRouter.get(
-  "/pothole/:id",
+  "/potholes/:id",
   requireUser,
   validateResource(idParamSchema),
-  getPotholeByIdHandler,
+  getPotholeByIdHandler
 );
 
 potholeRouter.post(
-  "/pothole",
+  "/potholes",
   requireUser,
   validateResource(createPotholeSchema),
-  createPotholeHandler,
+  createPotholeHandler
 );
 
 potholeRouter.put(
-  "/pothole/:id",
+  "/potholes/:id",
   requireUser,
   validateResource(updatePotholeSchema),
-  updatePotholeHandler,
+  updatePotholeHandler
 );
 
 potholeRouter.delete(
-  "/pothole/:id",
+  "/potholes/:id",
   requireUser,
   validateResource(idParamSchema),
-  deletePotholeHandler,
+  deletePotholeHandler
 );
 
 export default potholeRouter;
