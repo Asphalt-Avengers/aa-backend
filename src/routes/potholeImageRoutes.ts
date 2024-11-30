@@ -25,7 +25,7 @@ potholeImageRouter.get(
 
 potholeImageRouter.post(
   "/images",
-  requireUser,
+  // requireUser,
   validateResource(createPotholeImageSchema),
   createPotholeImageHandler
 );
