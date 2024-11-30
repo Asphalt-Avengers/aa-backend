@@ -27,7 +27,7 @@ potholeRouter.get(
 
 potholeRouter.post(
   "/potholes",
-  requireUser,
+  // requireUser,
   validateResource(createPotholeSchema),
   createPotholeHandler
 );

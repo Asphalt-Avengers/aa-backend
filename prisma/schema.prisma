@@ -32,8 +32,20 @@ model Pothole {
 model PotholeImage {
   id               Int       @id @default(autoincrement())
   pothole          Pothole   @relation(fields: [potholeId], references: [id])
+  boxes            PotholeImageBox[]
   potholeId        Int
   s3Url            String    
+  createdAt        DateTime  @default(now())
+}
+
+model PotholeImageBox {
+  id               Int       @id @default(autoincrement())
+  potholeImage     PotholeImage   @relation(fields: [potholeImageId], references: [id])
+  potholeImageId   Int
+  xCenter          Float
+  yCenter          Float
+  width            Float
+  height           Float 
   createdAt        DateTime  @default(now())
 }
 

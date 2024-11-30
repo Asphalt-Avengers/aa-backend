@@ -1,6 +1,6 @@
-import { PrismaClient, PotholeImage } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { PotholeImage } from "@prisma/client";
+import { CreatePotholeImageBody } from "@schema/potholeImageSchema";
+import prisma from "@prisma/index";
 
 export const getPotholeImages = async (): Promise<PotholeImage[]> => {
   return prisma.potholeImage.findMany();
@@ -14,12 +14,9 @@ export const getPotholeImageById = async (
   });
 };
 
-export const createPotholeImage = async (data: {
-  potholeId: number;
-  s3Url: string;
-}): Promise<PotholeImage> => {
+export const createPotholeImage = async (potholeImage: CreatePotholeImageBody): Promise<PotholeImage> => {
   return prisma.potholeImage.create({
-    data,
+    data: potholeImage,
   });
 };
 

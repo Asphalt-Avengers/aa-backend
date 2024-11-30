@@ -4,6 +4,7 @@ import userRouter from "@routes/userRoutes";
 import potholeRouter from "@routes/potholeRoutes";
 import potholeImageRouter from "./potholeImageRoutes";
 import reportRouter from "./reportRoutes";
+import potholeImageBoxRouter from "./potholeImageBoxRoutes";
 
 const router: Router = Router();
 
@@ -15,6 +16,7 @@ router.use(authRouter);
 router.use(userRouter);
 router.use(potholeRouter);
 router.use(potholeImageRouter);
+router.use(potholeImageBoxRouter);
 router.use(reportRouter);
 
 export default router;
