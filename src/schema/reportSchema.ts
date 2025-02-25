@@ -16,6 +16,7 @@ export type DeleteReportParams = TypeOf<typeof idParamSchema>["params"];
 export const createReportSchema = z.object({
   body: z.object({
     geom: z.string(),
+    geomJson: z.object({}),
     description: z.string().optional(),
     comments: z.string().optional(),
     status: z.nativeEnum(ReportStatus).optional(),

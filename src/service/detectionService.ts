@@ -33,20 +33,29 @@ export async function createDetection(
   detection: CreateDetectionBody
 ): Promise<any> {
   // generate geom
-  // Compute snapped grid geometry
-  const snappedGridResponse: { st_asbinary: Buffer }[] = await prisma.$queryRaw`
-      SELECT ST_AsBinary(
-          ST_SnapToGrid(
-              ST_SetSRID(ST_MakePoint(${detection.latitude}, ${detection.longitude}), 4326), 
-              0.001
-          )
-      )
-    `;
+  // Compute snapped grid geometry grid size of 20m x 20m
+  const snappedGridResponse: { st_asbinary: Buffer; st_asgeojson: string }[] =
+    await prisma.$queryRaw`
+    SELECT 
+      ST_AsBinary(
+        ST_SnapToGrid(
+          ST_SetSRID(ST_MakePoint(${detection.latitude}, ${detection.longitude}), 4326), 
+          0.00018, 0.00018
+        )
+      ) AS st_asbinary,
+      ST_AsGeoJSON(
+        ST_SnapToGrid(
+          ST_SetSRID(ST_MakePoint(${detection.latitude}, ${detection.longitude}), 4326), 
+          0.00018, 0.00018
+        )
+      ) AS st_asgeojson
+  `;
 
-  const geom = snappedGridResponse[0].st_asbinary.toString("hex");
+  const geom = snappedGridResponse[0].st_asbinary.toString("hex"); // Convert binary to hex
+  const geomJson = JSON.parse(snappedGridResponse[0].st_asgeojson); // Convert GeoJSON to object
 
   // Upsert the report for the grid
-  const report = await createReport({ geom });
+  const report = await createReport({ geom: geom, geomJson: geomJson });
 
   return await prisma.detection.create({
     data: {

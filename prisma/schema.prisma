@@ -32,7 +32,8 @@ model Detection {
 
 model Report {
   id               Int       @id @default(autoincrement())
-  geom             String     @unique    
+  geom             String     @unique
+  geomJson  Json       @unique
   description      String?
   detections       Detection[]
   comments         String?
