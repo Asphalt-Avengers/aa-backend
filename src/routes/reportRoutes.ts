@@ -16,36 +16,32 @@ import {
 
 const reportRouter = express.Router();
 
-reportRouter.get(
-  "/reports", 
-  //requireUser, 
-  getReportsHandler
-);
+reportRouter.get("/reports", requireUser, getReportsHandler);
 
 reportRouter.get(
   "/reports/:id",
-  //requireUser,
+  requireUser,
   validateResource(idParamSchema),
   getReportByIdHandler
 );
 
 reportRouter.post(
   "/reports",
-  //requireUser,
+  requireUser,
   validateResource(createReportSchema),
   createReportHandler
 );
 
 reportRouter.put(
   "/reports/:id",
-  //requireUser,
+  requireUser,
   validateResource(updateReportSchema),
   updateReportHandler
 );
 
 reportRouter.delete(
   "/reports/:id",
-  //requireUser,
+  requireUser,
   validateResource(idParamSchema),
   deleteReportHandler
 );

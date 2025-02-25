@@ -16,35 +16,32 @@ import {
 
 const detectionRouter = express.Router();
 
-detectionRouter.get("/detections", 
-  //requireUser, 
-  getDetectionsHandler
-);
+detectionRouter.get("/detections", requireUser, getDetectionsHandler);
 
 detectionRouter.get(
   "/detections/:id",
-  //requireUser,
+  requireUser,
   validateResource(idParamSchema),
   getDetectionByIdHandler
 );
 
 detectionRouter.post(
   "/detections",
-  //requireUser,
+  requireUser,
   validateResource(createDetectionSchema),
   createDetectionHandler
 );
 
 detectionRouter.put(
   "/detections/:id",
-  //requireUser,
+  requireUser,
   validateResource(updateDetectionSchema),
   updateDetectionHandler
 );
 
 detectionRouter.delete(
   "/detections/:id",
-  //requireUser,
+  requireUser,
   validateResource(idParamSchema),
   deleteDetectionHandler
 );
