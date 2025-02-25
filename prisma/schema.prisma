@@ -17,36 +17,28 @@ model User {
   updatedAt        DateTime @updatedAt
 }
 
-model Pothole {
+model Detection {
   id               Int       @id @default(autoincrement())
-  latitude         Float?
-  longitude        Float?
-  severity         PotholeSeverity?
+  latitude         Float
+  longitude        Float
+  severity         DetectionSeverity?
   description      String?
-  images           PotholeImage[]
   createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  report           Report?
-}
-
-model PotholeImage {
-  id               Int       @id @default(autoincrement())
-  pothole          Pothole   @relation(fields: [potholeId], references: [id])
-  potholeId        Int
-  s3Url            String    
-  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @default(now()) @updatedAt
+  s3Url            String
+  reportId         Int
+  report           Report @relation(fields: [reportId], references: [id])
 }
 
 model Report {
   id               Int       @id @default(autoincrement())
-  location         String?
+  geom             String     @unique    
   description      String?
-  pothole          Pothole   @relation(fields: [potholeId], references: [id])
-  potholeId        Int       @unique
+  detections       Detection[]
   comments         String?
   status           ReportStatus?
   createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  updatedAt        DateTime  @default(now()) @updatedAt
   details          String?
 }
 
@@ -56,7 +48,7 @@ enum ReportStatus {
   RESOLVED
 }
 
-enum PotholeSeverity {
+enum DetectionSeverity {
   MINOR
   MODERATE
   SIGNIFICANT

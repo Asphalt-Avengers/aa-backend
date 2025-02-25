@@ -2,7 +2,7 @@
   "name": "aa-backend",
   "scripts": {
     "server": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
-    "create-potholes": "ts-node-dev prisma/seeding/createPotholes.ts"
+    "create-detections": "ts-node-dev prisma/seeding/createDetections.ts"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.1.0",

@@ -1,8 +1,7 @@
 import { Router } from "express";
 import authRouter from "@routes/authRoutes";
 import userRouter from "@routes/userRoutes";
-import potholeRouter from "@routes/potholeRoutes";
-import potholeImageRouter from "./potholeImageRoutes";
+import detectionRouter from "@routes/detectionRoutes";
 import reportRouter from "./reportRoutes";
 
 const router: Router = Router();
@@ -13,8 +12,7 @@ router.get("/healthcheck", (req, res) => {
 
 router.use(authRouter);
 router.use(userRouter);
-router.use(potholeRouter);
-router.use(potholeImageRouter);
+router.use(detectionRouter);
 router.use(reportRouter);
 
 export default router;
