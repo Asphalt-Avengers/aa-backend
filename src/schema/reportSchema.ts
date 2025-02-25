@@ -15,10 +15,8 @@ export type DeleteReportParams = TypeOf<typeof idParamSchema>["params"];
 // Schema for creating a new report
 export const createReportSchema = z.object({
   body: z.object({
-    potholeId: z.number().int().nonnegative({
-      message: "Pothole ID must be a non-negative integer.",
-    }),
-    location: z.string().optional(),
+    geom: z.string(),
+    geomJson: z.object({}),
     description: z.string().optional(),
     comments: z.string().optional(),
     status: z.nativeEnum(ReportStatus).optional(),

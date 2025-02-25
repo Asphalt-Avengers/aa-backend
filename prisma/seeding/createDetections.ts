@@ -1,28 +1,27 @@
-import { PotholeSeverity, PrismaClient, ReportStatus } from "@prisma/client";
-import { faker } from '@faker-js/faker';
+import { DetectionSeverity, PrismaClient, ReportStatus } from "@prisma/client";
+import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
 
-// Clear all potholes from the database
-async function clearPotholes() {
-  await prisma.potholeImage.deleteMany();
+// Clear all detections from the database
+async function clearDetections() {
   await prisma.report.deleteMany();
-  await prisma.pothole.deleteMany();
+  await prisma.detection.deleteMany();
 }
 
-// Create a random number of potholes with associated images and reports
-async function createPotholes(count: number) {
-  const severities = Object.values(PotholeSeverity);
+// Create a random number of detections with associated images and reports
+async function createDetections(count: number) {
+  const severities = Object.values(DetectionSeverity);
   const statuses = Object.values(ReportStatus);
 
   for (let i = 0; i < count; i++) {
-    await prisma.pothole.create({
+    await prisma.detection.create({
       data: {
-        latitude: parseFloat((faker.location.latitude()).toFixed(6)),
-        longitude: parseFloat((faker.location.longitude()).toFixed(6)),
+        latitude: parseFloat(faker.location.latitude().toFixed(6)),
+        longitude: parseFloat(faker.location.longitude().toFixed(6)),
         severity: severities[Math.floor(Math.random() * severities.length)],
         description: faker.lorem.sentence(),
-        // Generate a random number of pothole images
+        // Generate a random number of detection images
         images: {
           create: Array.from({ length: Math.ceil(Math.random() * 3) }, () => ({
             s3Url: faker.internet.url(),
@@ -44,17 +43,17 @@ async function createPotholes(count: number) {
 }
 
 async function main() {
-  // Number of potholes to seed
-  const potholeCount = 10
+  // Number of detections to seed
+  const detectionCount = 10;
 
-  // Clear potholes
-  await clearPotholes();
-  console.log('Potholes cleared.');
+  // Clear detections
+  await clearDetections();
+  console.log("Detections cleared.");
 
-  // Seed Potholes
-  await createPotholes(potholeCount);
+  // Seed Detections
+  await createDetections(detectionCount);
 
-  console.log(`Database has been seeded with ${potholeCount} potholes!`);
+  console.log(`Database has been seeded with ${detectionCount} detections!`);
 }
 
 main()
