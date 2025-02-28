@@ -5,8 +5,8 @@ const prisma = new PrismaClient();
 
 // Clear all detections from the database
 async function clearDetections() {
-  await prisma.report.deleteMany();
   await prisma.detection.deleteMany();
+  await prisma.report.deleteMany();
 }
 
 // Create a random number of detections with associated images and reports
@@ -22,19 +22,25 @@ async function createDetections(count: number) {
         severity: severities[Math.floor(Math.random() * severities.length)],
         description: faker.lorem.sentence(),
         // Generate a random number of detection images
-        images: {
-          create: Array.from({ length: Math.ceil(Math.random() * 3) }, () => ({
-            s3Url: faker.internet.url(),
-          })),
-        },
+        s3Url: faker.internet.url(),
         // Generate a random report
         report: {
           create: {
-            location: faker.location.streetAddress(),
             description: faker.lorem.sentences(2),
             comments: faker.lorem.sentence(),
             status: statuses[Math.floor(Math.random() * statuses.length)],
             details: faker.lorem.paragraph(),
+            geom:
+              faker.location.latitude().toString() +
+              "," +
+              faker.location.longitude().toString(),
+            geomJson: JSON.stringify({
+              type: "Point",
+              coordinates: [
+                parseFloat(faker.location.longitude().toString()),
+                parseFloat(faker.location.latitude().toString()),
+              ],
+            }),
           },
         },
       },
