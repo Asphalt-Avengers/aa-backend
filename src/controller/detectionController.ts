@@ -1,4 +1,6 @@
 import { Prisma } from "@prisma/client";
+import { Request, Response } from "express";
+
 import {
   CreateDetectionBody,
   DeleteDetectionParams,
@@ -13,29 +15,58 @@ import {
   getDetections,
   updateDetection,
 } from "@service/detectionService";
-import { Request, Response } from "express";
 
-export const getDetectionsHandler = async (
-  req: Request<{}, {}, {}>,
-  res: Response
+export const createDetectionHandler = async (
+  req: Request<object, object, CreateDetectionBody>,
+  res: Response,
 ) => {
+  const body = req.body;
+
   try {
-    const detections = await getDetections();
-    res.status(200).json({
-      message: "Retrieved detections successfully",
-      detections,
+    const detection = await createDetection(body);
+    res.status(201).json({
+      message: "Detection created successfully",
+      detection,
     });
-  } catch (e: any) {
+  } catch (e) {
     res.status(500).json({
       error: "An unexpected error occurred.",
-      details: e.message,
+      details: (e as Error).message,
+    });
+  }
+};
+
+export const deleteDetectionHandler = async (
+  req: Request<DeleteDetectionParams, object, object>,
+  res: Response,
+) => {
+  const id = Number(req.params.id);
+
+  try {
+    const detection = await deleteDetection(id);
+    res.status(200).json({
+      message: "Detection deleted successfully",
+      detection,
+    });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2025") {
+        res.status(404).json({
+          error: `Detection with ID ${id} not found`,
+        });
+        return;
+      }
+    }
+    res.status(500).json({
+      error: "An unexpected error occurred.",
+      details: (e as Error).message,
     });
   }
 };
 
 export const getDetectionByIdHandler = async (
-  req: Request<GetDetectionByIdParams, {}, {}>,
-  res: Response
+  req: Request<GetDetectionByIdParams, object, object>,
+  res: Response,
 ) => {
   const id = Number(req.params.id);
 
@@ -51,37 +82,32 @@ export const getDetectionByIdHandler = async (
       message: "Retrieved detection successfully",
       detection,
     });
-  } catch (e: any) {
+  } catch (e) {
     res.status(500).json({
       error: "An unexpected error occurred.",
-      details: e.message,
+      details: (e as Error).message,
     });
   }
 };
 
-export const createDetectionHandler = async (
-  req: Request<{}, {}, CreateDetectionBody>,
-  res: Response
-) => {
-  const body = req.body;
-
+export const getDetectionsHandler = async (req: Request, res: Response) => {
   try {
-    const detection = await createDetection(body);
-    res.status(201).json({
-      message: "Detection created successfully",
-      detection,
+    const detections = await getDetections();
+    res.status(200).json({
+      message: "Retrieved detections successfully",
+      detections,
     });
-  } catch (e: any) {
+  } catch (e) {
     res.status(500).json({
       error: "An unexpected error occurred.",
-      details: e.message,
+      details: (e as Error).message,
     });
   }
 };
 
 export const updateDetectionHandler = async (
-  req: Request<UpdateDetectionParams, {}, UpdateDetectionBody>,
-  res: Response
+  req: Request<UpdateDetectionParams, object, UpdateDetectionBody>,
+  res: Response,
 ) => {
   const id = Number(req.params.id);
   const body = req.body;
@@ -92,7 +118,7 @@ export const updateDetectionHandler = async (
       message: "Detection updated successfully",
       detection,
     });
-  } catch (e: any) {
+  } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2025") {
         res.status(404).json({
@@ -103,35 +129,7 @@ export const updateDetectionHandler = async (
     }
     res.status(500).json({
       error: "An unexpected error occurred.",
-      details: e.message,
-    });
-  }
-};
-
-export const deleteDetectionHandler = async (
-  req: Request<DeleteDetectionParams, {}, {}>,
-  res: Response
-) => {
-  const id = Number(req.params.id);
-
-  try {
-    const detection = await deleteDetection(id);
-    res.status(200).json({
-      message: "Detection deleted successfully",
-      detection,
-    });
-  } catch (e: any) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2025") {
-        res.status(404).json({
-          error: `Detection with ID ${id} not found`,
-        });
-        return;
-      }
-    }
-    res.status(500).json({
-      error: "An unexpected error occurred.",
-      details: e.message,
+      details: (e as Error).message,
     });
   }
 };
