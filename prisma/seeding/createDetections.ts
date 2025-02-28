@@ -1,5 +1,5 @@
-import { DetectionSeverity, PrismaClient, ReportStatus } from "@prisma/client";
 import { faker } from "@faker-js/faker";
+import { DetectionSeverity, PrismaClient, ReportStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -62,11 +62,7 @@ async function main() {
   console.log(`Database has been seeded with ${detectionCount} detections!`);
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

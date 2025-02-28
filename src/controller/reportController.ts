@@ -1,4 +1,6 @@
+import { Prisma } from "@prisma/client";
 import { Request, Response } from "express";
+
 import {
   CreateReportBody,
   DeleteReportParams,
@@ -13,26 +15,57 @@ import {
   getReports,
   updateReport,
 } from "@service/reportService";
-import { Prisma } from "@prisma/client";
 
-export const getReportsHandler = async (req: Request, res: Response) => {
+export const createReportHandler = async (
+  req: Request<object, object, CreateReportBody>,
+  res: Response,
+) => {
+  const body = req.body;
+
   try {
-    const reports = await getReports();
-    res.status(200).json({
-      message: "Retrieved reports successfully",
-      reports,
+    const report = await createReport(body);
+    res.status(201).json({
+      message: "Report created successfully",
+      report,
     });
-  } catch (e: any) {
+  } catch (e) {
     res.status(500).json({
       error: "An unexpected error occurred.",
-      details: e.message,
+      details: (e as Error).message,
+    });
+  }
+};
+
+export const deleteReportHandler = async (
+  req: Request<DeleteReportParams>,
+  res: Response,
+) => {
+  const id = Number(req.params.id);
+
+  try {
+    const report = await deleteReport(id);
+    res.status(200).json({
+      message: "Report deleted successfully",
+      report,
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2025"
+    ) {
+      res.status(404).json({ error: `Report with ID ${id} not found` });
+      return;
+    }
+    res.status(500).json({
+      error: "An unexpected error occurred.",
+      details: (e as Error).message,
     });
   }
 };
 
 export const getReportByIdHandler = async (
   req: Request<GetReportByIdParams>,
-  res: Response
+  res: Response,
 ) => {
   const id = Number(req.params.id);
 
@@ -46,37 +79,32 @@ export const getReportByIdHandler = async (
       message: "Retrieved report successfully",
       report,
     });
-  } catch (e: any) {
+  } catch (e) {
     res.status(500).json({
       error: "An unexpected error occurred.",
-      details: e.message,
+      details: (e as Error).message,
     });
   }
 };
 
-export const createReportHandler = async (
-  req: Request<{}, {}, CreateReportBody>,
-  res: Response
-) => {
-  const body = req.body;
-
+export const getReportsHandler = async (req: Request, res: Response) => {
   try {
-    const report = await createReport(body);
-    res.status(201).json({
-      message: "Report created successfully",
-      report,
+    const reports = await getReports();
+    res.status(200).json({
+      message: "Retrieved reports successfully",
+      reports,
     });
-  } catch (e: any) {
+  } catch (e) {
     res.status(500).json({
       error: "An unexpected error occurred.",
-      details: e.message,
+      details: (e as Error).message,
     });
   }
 };
 
 export const updateReportHandler = async (
-  req: Request<UpdateReportParams, {}, UpdateReportBody>,
-  res: Response
+  req: Request<UpdateReportParams, object, UpdateReportBody>,
+  res: Response,
 ) => {
   const id = Number(req.params.id);
   const body = req.body;
@@ -87,7 +115,7 @@ export const updateReportHandler = async (
       message: "Report updated successfully",
       report,
     });
-  } catch (e: any) {
+  } catch (e) {
     if (
       e instanceof Prisma.PrismaClientKnownRequestError &&
       e.code === "P2025"
@@ -97,34 +125,7 @@ export const updateReportHandler = async (
     }
     res.status(500).json({
       error: "An unexpected error occurred.",
-      details: e.message,
-    });
-  }
-};
-
-export const deleteReportHandler = async (
-  req: Request<DeleteReportParams>,
-  res: Response
-) => {
-  const id = Number(req.params.id);
-
-  try {
-    const report = await deleteReport(id);
-    res.status(200).json({
-      message: "Report deleted successfully",
-      report,
-    });
-  } catch (e: any) {
-    if (
-      e instanceof Prisma.PrismaClientKnownRequestError &&
-      e.code === "P2025"
-    ) {
-      res.status(404).json({ error: `Report with ID ${id} not found` });
-      return;
-    }
-    res.status(500).json({
-      error: "An unexpected error occurred.",
-      details: e.message,
+      details: (e as Error).message,
     });
   }
 };

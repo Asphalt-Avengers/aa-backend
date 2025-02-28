@@ -1,6 +1,6 @@
 import { Detection, Report } from "@prisma/client";
-import prisma from "@prisma/index";
 
+import prisma from "@prisma/index";
 import {
   CreateDetectionBody,
   UpdateDetectionBody,
@@ -8,30 +8,7 @@ import {
 
 import { createReport } from "./reportService";
 
-export async function getDetections(): Promise<
-  (Detection & { report: Report | null })[]
-> {
-  return await prisma.detection.findMany({
-    include: {
-      report: true,
-    },
-  });
-}
-
-export async function getDetectionById(
-  id: number
-): Promise<(Detection & { report: Report | null }) | null> {
-  return await prisma.detection.findUnique({
-    where: { id },
-    include: {
-      report: true,
-    },
-  });
-}
-
-export async function createDetection(
-  detection: CreateDetectionBody
-): Promise<any> {
+export async function createDetection(detection: CreateDetectionBody) {
   // generate geom
   // Compute snapped grid geometry grid size of 20m x 20m
   const snappedGridResponse: { st_asbinary: Buffer; st_asgeojson: string }[] =
@@ -52,7 +29,10 @@ export async function createDetection(
   `;
 
   const geom = snappedGridResponse[0].st_asbinary.toString("hex"); // Convert binary to hex
-  const geomJson = JSON.parse(snappedGridResponse[0].st_asgeojson); // Convert GeoJSON to object
+  const geomJson = JSON.parse(snappedGridResponse[0].st_asgeojson) as {
+    type: string;
+    coordinates: number[];
+  }; // Convert GeoJSON to object
 
   // Upsert the report for the grid
   const report = await createReport({ geom: geom, geomJson: geomJson });
@@ -65,18 +45,39 @@ export async function createDetection(
   });
 }
 
+export async function deleteDetection(id: number): Promise<Detection> {
+  return await prisma.detection.delete({
+    where: { id },
+  });
+}
+
+export async function getDetectionById(
+  id: number,
+): Promise<(Detection & { report: Report | null }) | null> {
+  return await prisma.detection.findUnique({
+    where: { id },
+    include: {
+      report: true,
+    },
+  });
+}
+
+export async function getDetections(): Promise<
+  (Detection & { report: Report | null })[]
+> {
+  return await prisma.detection.findMany({
+    include: {
+      report: true,
+    },
+  });
+}
+
 export async function updateDetection(
   id: number,
-  detection: UpdateDetectionBody
+  detection: UpdateDetectionBody,
 ): Promise<Detection> {
   return await prisma.detection.update({
     where: { id },
     data: detection,
-  });
-}
-
-export async function deleteDetection(id: number): Promise<Detection> {
-  return await prisma.detection.delete({
-    where: { id },
   });
 }

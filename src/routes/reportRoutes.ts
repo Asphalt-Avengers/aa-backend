@@ -1,20 +1,21 @@
-import express from "express";
+import { Router } from "express";
+
 import {
   createReportHandler,
   deleteReportHandler,
   getReportByIdHandler,
   getReportsHandler,
   updateReportHandler,
-} from "../controller/reportController";
-import validateResource from "../middleware/validateResource";
-import requireUser from "../middleware/requireUser";
+} from "@controller/reportController";
+import requireUser from "@middleware/requireUser";
+import validateResource from "@middleware/validateResource";
 import {
   createReportSchema,
   idParamSchema,
   updateReportSchema,
-} from "../schema/reportSchema";
+} from "@schema/reportSchema";
 
-const reportRouter = express.Router();
+const reportRouter = Router();
 
 reportRouter.get("/reports", requireUser, getReportsHandler);
 
@@ -22,28 +23,28 @@ reportRouter.get(
   "/reports/:id",
   requireUser,
   validateResource(idParamSchema),
-  getReportByIdHandler
+  getReportByIdHandler,
 );
 
 reportRouter.post(
   "/reports",
   requireUser,
   validateResource(createReportSchema),
-  createReportHandler
+  createReportHandler,
 );
 
 reportRouter.put(
   "/reports/:id",
   requireUser,
   validateResource(updateReportSchema),
-  updateReportHandler
+  updateReportHandler,
 );
 
 reportRouter.delete(
   "/reports/:id",
   requireUser,
   validateResource(idParamSchema),
-  deleteReportHandler
+  deleteReportHandler,
 );
 
 export default reportRouter;
