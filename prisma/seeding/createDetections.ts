@@ -17,13 +17,15 @@ async function createDetections(count: number) {
   for (let i = 0; i < count; i++) {
     await prisma.detection.create({
       data: {
-        latitude: parseFloat(faker.location.latitude().toFixed(6)),
-        longitude: parseFloat(faker.location.longitude().toFixed(6)),
+        latitude: parseFloat(
+          (43.4723 + (Math.random() - 0.5) * 0.01).toFixed(6),
+        ),
+        longitude: parseFloat(
+          (-80.5449 + (Math.random() - 0.5) * 0.01).toFixed(6),
+        ),
         severity: severities[Math.floor(Math.random() * severities.length)],
         description: faker.lorem.sentence(),
-        // Generate a random number of detection images
         s3Url: faker.internet.url(),
-        // Generate a random report
         report: {
           create: {
             description: faker.lorem.sentences(2),
@@ -31,14 +33,16 @@ async function createDetections(count: number) {
             status: statuses[Math.floor(Math.random() * statuses.length)],
             details: faker.lorem.paragraph(),
             geom:
-              faker.location.latitude().toString() +
+              (43.4723 + (Math.random() - 0.5) * 0.01).toFixed(6) +
               "," +
-              faker.location.longitude().toString(),
+              (-80.5449 + (Math.random() - 0.5) * 0.01).toFixed(6),
             geomJson: JSON.stringify({
               type: "Point",
               coordinates: [
-                parseFloat(faker.location.longitude().toString()),
-                parseFloat(faker.location.latitude().toString()),
+                parseFloat(
+                  (-80.5449 + (Math.random() - 0.5) * 0.01).toFixed(6),
+                ),
+                parseFloat((43.4723 + (Math.random() - 0.5) * 0.01).toFixed(6)),
               ],
             }),
           },
