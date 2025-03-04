@@ -102,6 +102,52 @@ export const getReportsHandler = async (req: Request, res: Response) => {
   }
 };
 
+export const getReportsSummaryHandler = async (req: Request, res: Response) => {
+  try {
+    const reports = await getReports();
+
+    const summary = reports.reduce(
+      (
+        acc: {
+          [key: string]: { date: string; open: number; resolved: number };
+        },
+        report,
+      ) => {
+        const date = new Date(report.createdAt);
+        const monthYear = date.toLocaleString("default", {
+          month: "short",
+          year: "numeric",
+        });
+
+        if (!acc[monthYear]) {
+          acc[monthYear] = { date: monthYear, open: 0, resolved: 0 };
+        }
+
+        if (report.status === "OPEN" || report.status === "IN_PROGRESS") {
+          acc[monthYear].open += 1;
+        } else if (report.status === "RESOLVED") {
+          acc[monthYear].resolved += 1;
+        }
+
+        return acc;
+      },
+      {},
+    );
+
+    const reportsSummary = Object.values(summary);
+
+    res.status(200).json({
+      message: "Report summary retrieved successfully",
+      reportsSummary,
+    });
+  } catch (e) {
+    res.status(500).json({
+      error: "An unexpected error occurred.",
+      details: (e as Error).message,
+    });
+  }
+};
+
 export const updateReportHandler = async (
   req: Request<UpdateReportParams, object, UpdateReportBody>,
   res: Response,
