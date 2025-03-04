@@ -5,6 +5,7 @@ import {
   deleteReportHandler,
   getReportByIdHandler,
   getReportsHandler,
+  getReportsSummaryHandler,
   updateReportHandler,
 } from "@controller/reportController";
 import requireUser from "@middleware/requireUser";
@@ -18,6 +19,8 @@ import {
 const reportRouter = Router();
 
 reportRouter.get("/reports", requireUser, getReportsHandler);
+
+reportRouter.get("/reports/summary", requireUser, getReportsSummaryHandler);
 
 reportRouter.get(
   "/reports/:id",

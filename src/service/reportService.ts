@@ -31,13 +31,16 @@ export async function getReportById(
   });
 }
 
-// Fetch all reports, including the associated detection
+// Fetch all reports, including the associated detection, ordered by createdAt
 export async function getReports(): Promise<
   (Report & { detections: Detection[] })[]
 > {
   return await prisma.report.findMany({
     include: {
       detections: true,
+    },
+    orderBy: {
+      createdAt: "asc",
     },
   });
 }

@@ -10,12 +10,8 @@ import { createUserSchema } from "@schema/userSchema";
 
 const userRouter = Router();
 
-userRouter.post(
-  "/users",
-  validateResource(createUserSchema),
-  createUserHandler,
-);
+userRouter.post("/user", validateResource(createUserSchema), createUserHandler);
 
-userRouter.get("/users/me", requireUser, getCurrentUserHandler);
+userRouter.get("/user", requireUser, getCurrentUserHandler);
 
 export default userRouter;
