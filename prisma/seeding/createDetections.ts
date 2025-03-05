@@ -54,7 +54,7 @@ async function createDetections(count: number) {
 
 async function main() {
   // Number of detections to seed
-  const detectionCount = 10;
+  const detectionCount = 25;
 
   // Clear detections
   await clearDetections();
