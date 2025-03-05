@@ -89,7 +89,7 @@ export const getReportByIdHandler = async (
 
 export const getReportsHandler = async (req: Request, res: Response) => {
   try {
-    const reports = await getReports();
+    const reports = await getReports({ createdAt: "desc" });
     res.status(200).json({
       message: "Retrieved reports successfully",
       reports,
@@ -104,7 +104,7 @@ export const getReportsHandler = async (req: Request, res: Response) => {
 
 export const getReportsSummaryHandler = async (req: Request, res: Response) => {
   try {
-    const reports = await getReports();
+    const reports = await getReports({ createdAt: "asc" });
 
     const summary = reports.reduce(
       (
