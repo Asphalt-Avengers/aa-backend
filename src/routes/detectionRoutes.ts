@@ -28,7 +28,6 @@ detectionRouter.get(
 
 detectionRouter.post(
   "/detections",
-  requireUser,
   validateResource(createDetectionSchema),
   createDetectionHandler,
 );
