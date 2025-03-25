@@ -15,6 +15,7 @@ const app = express();
 app.use(json());
 app.use(
   cors({
+    origin: ["http://localhost:5173", "https://aa-frontend-lr2f.onrender.com"],
     credentials: true,
   }),
 );
