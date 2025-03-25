@@ -29,7 +29,7 @@ export async function createSessionHandler(
 
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    maxAge: 1000 * 60 * 15,
+    maxAge: 1000 * 60 * 60 * 24,
   });
 
   res.cookie("refreshToken", refreshToken, {
