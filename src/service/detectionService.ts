@@ -35,7 +35,7 @@ export async function createDetection(detection: CreateDetectionBody) {
   }; // Convert GeoJSON to object
 
   // Upsert the report for the grid
-  const report = await createReport({ geom: geom, geomJson: geomJson });
+  const report = await createReport({ geom: geom, geomJson: geomJson, status: "OPEN" });
 
   return await prisma.detection.create({
     data: {
